@@ -888,7 +888,7 @@
       display: none;
     }
 
-    /* Tema oscuro gerencial inspirado en Industrias Islas Perú */
+    /* Tema oscuro gerencial inspirado en Industrias Islas PerÃº */
     body {
       background:
         radial-gradient(circle at 10% 0%, rgba(35, 141, 187, .20), transparent 34rem),
@@ -1084,7 +1084,7 @@
       background: rgba(139, 204, 225, .12);
     }
 
-    /* Tema ejecutivo suave: menos oscuro, más aire y color en tarjetas */
+    /* Tema ejecutivo suave: menos oscuro, mÃ¡s aire y color en tarjetas */
     body {
       background:
         radial-gradient(circle at 8% -8%, rgba(104, 185, 215, .30), transparent 32rem),
@@ -1207,7 +1207,7 @@
       background: #17344a;
     }
 
-    /* Ajuste final: azul corporativo más luminoso, no negro */
+    /* Ajuste final: azul corporativo mÃ¡s luminoso, no negro */
     body {
       background:
         radial-gradient(circle at 8% -8%, rgba(104, 185, 215, .34), transparent 32rem),
@@ -1521,14 +1521,14 @@
   <main class="shell" id="captureArea">
     <header class="topbar">
       <div class="brand">
-        <div class="brand-icon"><img class="brand-logo" src="industrias-islas-logo.png" alt="Industrias Islas Perú"></div>
+        <div class="brand-icon"><img class="brand-logo" src="industrias-islas-logo.png" alt="Industrias Islas PerÃº"></div>
         <div>
           <h1>Dashboard Gerencial | Planta Desaladora NEXA</h1>
-          <div class="subtitle">Industrias Islas Perú · Producción, recuperación RO, calidad, activos y decisiones del turno</div>
+          <div class="subtitle">Industrias Islas PerÃº Â· ProducciÃ³n, recuperaciÃ³n RO, calidad, activos y decisiones del turno</div>
         </div>
       </div>
       <div class="top-actions">
-        <span class="chip ok"><i class="fas fa-circle"></i> Operación en línea</span>
+        <span class="chip ok"><i class="fas fa-circle"></i> OperaciÃ³n en lÃ­nea</span>
         <span class="chip warn" id="topRiskChip"><i class="fas fa-triangle-exclamation"></i> Evaluando riesgo</span>
         <button class="btn dark" type="button" id="captureBtn" onclick="captureDashboard()"><i class="fas fa-camera"></i> Capturar dashboard</button>
       </div>
@@ -1538,12 +1538,12 @@
       <div class="field">
         <label>Vista</label>
         <select id="vista" onchange="renderDashboard()">
-          <option value="dia">Día seleccionado</option>
+          <option value="dia">DÃ­a seleccionado</option>
           <option value="mes">Mes seleccionado</option>
           <option value="anual">Acumulado anual</option>
         </select>
       </div>
-      <div class="field"><label>Año</label><select id="anio" onchange="refrescarMesFecha(); renderDashboard();"></select></div>
+      <div class="field"><label>AÃ±o</label><select id="anio" onchange="refrescarMesFecha(); renderDashboard();"></select></div>
       <div class="field"><label>Mes</label><select id="mes" onchange="refrescarFechas(); renderDashboard();"></select></div>
       <div class="field"><label>Fecha</label><select id="fecha" onchange="renderDashboard()"></select></div>
       <button class="btn" type="button" onclick="cargarSheets(true)"><i class="fas fa-rotate-right"></i> Actualizar</button>
@@ -1566,12 +1566,12 @@
               </div>
             </div>
             <div class="decision-copy">
-              <h2 id="execHeadline">Esperando datos de producción...</h2>
-              <p id="execNarrative">El tablero conectará con Google Sheets y resumirá el estado ejecutivo del turno.</p>
+              <h2 id="execHeadline">Esperando datos de producciÃ³n...</h2>
+              <p id="execNarrative">El tablero conectarÃ¡ con Google Sheets y resumirÃ¡ el estado ejecutivo del turno.</p>
               <div class="exec-kpis">
-                <div class="exec-kpi red"><small>Brecha producción</small><strong id="kpiGap">--</strong><span id="kpiGapNote">Meta vs alcanzado</span></div>
-                <div class="exec-kpi amber"><small>RO crítico</small><strong id="kpiCriticalRo">--</strong><span id="kpiCriticalRoNote">Módulo con menor recuperación</span></div>
-                <div class="exec-kpi green"><small>Recuperación promedio</small><strong id="kpiRecProm">--</strong><span>RO A - RO E</span></div>
+                <div class="exec-kpi red"><small>Brecha producciÃ³n</small><strong id="kpiGap">--</strong><span id="kpiGapNote">Meta vs alcanzado</span></div>
+                <div class="exec-kpi amber"><small>RO crÃ­tico</small><strong id="kpiCriticalRo">--</strong><span id="kpiCriticalRoNote">MÃ³dulo con menor recuperaciÃ³n</span></div>
+                <div class="exec-kpi green"><small>RecuperaciÃ³n promedio</small><strong id="kpiRecProm">--</strong><span>RO A - RO E</span></div>
                 <div class="exec-kpi purple"><small>Calidad</small><strong id="kpiQuality">--</strong><span id="kpiQualityNote">Turbidez del periodo</span></div>
               </div>
             </div>
@@ -1580,7 +1580,7 @@
 
         <aside class="panel action-panel">
           <div class="panel-head">
-            <h2><i class="fas fa-bullseye"></i> Decisión gerencial</h2>
+            <h2><i class="fas fa-bullseye"></i> DecisiÃ³n gerencial</h2>
             <span id="periodLabel">--</span>
           </div>
           <div class="panel-body">
@@ -1589,9 +1589,9 @@
               <strong id="priorityText">Esperando datos</strong>
             </div>
             <ul class="action-list">
-              <li><span class="rank">1</span><div><strong id="action1Title">Validar estado operativo</strong><span id="action1Text">Pendiente de datos.</span></div><span class="tag red">Crítico</span></li>
+              <li><span class="rank">1</span><div><strong id="action1Title">Validar estado operativo</strong><span id="action1Text">Pendiente de datos.</span></div><span class="tag red">CrÃ­tico</span></li>
               <li><span class="rank">2</span><div><strong id="action2Title">Revisar calidad</strong><span id="action2Text">Pendiente de datos.</span></div><span class="tag amber">Riesgo</span></li>
-              <li><span class="rank">3</span><div><strong id="action3Title">Balancear producción</strong><span id="action3Text">Pendiente de datos.</span></div><span class="tag green">Acción</span></li>
+              <li><span class="rank">3</span><div><strong id="action3Title">Balancear producciÃ³n</strong><span id="action3Text">Pendiente de datos.</span></div><span class="tag green">AcciÃ³n</span></li>
             </ul>
           </div>
         </aside>
@@ -1600,13 +1600,13 @@
       <section class="prod-grid">
         <article class="panel">
           <div class="panel-head">
-            <h3><i class="fas fa-industry"></i> Producción requerida vs alcanzada</h3>
+            <h3><i class="fas fa-industry"></i> ProducciÃ³n requerida vs alcanzada</h3>
             <span id="prodStatus">--</span>
           </div>
           <div class="panel-body">
             <div class="prod-values">
-              <div class="prod-card"><small>Producción requerida</small><strong id="prodReqVal">--</strong><span>Origen: BG</span></div>
-              <div class="prod-card" id="prodAchCard"><small>Producción alcanzada</small><strong id="prodAchVal">--</strong><span>Origen: BF</span></div>
+              <div class="prod-card"><small>ProducciÃ³n requerida</small><strong id="prodReqVal">--</strong><span>Origen: BG</span></div>
+              <div class="prod-card" id="prodAchCard"><small>ProducciÃ³n alcanzada</small><strong id="prodAchVal">--</strong><span>Origen: BF</span></div>
               <div class="prod-card"><small>Meta restante</small><strong id="prodRestVal">--</strong><span>Brecha operativa</span></div>
             </div>
             <div class="bar-track"><div class="bar-fill" id="prodBarFill"></div></div>
@@ -1629,7 +1629,7 @@
       </section>
 
       <article class="panel">
-        <div class="panel-head"><h3><i class="fas fa-water"></i> Recuperación de 5 ósmosis inversa</h3><span>RO A - RO E</span></div>
+        <div class="panel-head"><h3><i class="fas fa-water"></i> RecuperaciÃ³n de 5 Ã³smosis inversa</h3><span>RO A - RO E</span></div>
         <div class="panel-body"><div class="ro-grid" id="roCards"></div></div>
       </article>
 
@@ -1640,16 +1640,16 @@
             <ul class="summary-list">
               <li><span>TK nuevo</span><strong id="sumTkNuevo">--</strong></li>
               <li><span>TK antiguo</span><strong id="sumTkAntiguo">--</strong></li>
-              <li><span>Recuperación nuevo</span><strong id="sumRecNuevo">--</strong></li>
-              <li><span>Recuperación antiguo</span><strong id="sumRecAntiguo">--</strong></li>
+              <li><span>RecuperaciÃ³n nuevo</span><strong id="sumRecNuevo">--</strong></li>
+              <li><span>RecuperaciÃ³n antiguo</span><strong id="sumRecAntiguo">--</strong></li>
               <li><span>Eventos turbidez &gt; 5 NTU</span><strong id="sumTurbEvents">--</strong></li>
             </ul>
           </div>
         </article>
         <div class="charts">
-          <article class="panel chart-card"><div class="panel-head"><h3>Conductividad por módulos</h3></div><div class="panel-body"><canvas id="chartCondMod"></canvas></div></article>
+          <article class="panel chart-card"><div class="panel-head"><h3>Conductividad por mÃ³dulos</h3></div><div class="panel-body"><canvas id="chartCondMod"></canvas></div></article>
           <article class="panel chart-card"><div class="panel-head"><h3>Turbidez diaria del mes</h3></div><div class="panel-body"><canvas id="chartTurbidezMes"></canvas></div></article>
-          <article class="panel chart-card"><div class="panel-head"><h3>Volúmenes por módulos y pozos</h3></div><div class="panel-body"><canvas id="chartVolumenes"></canvas></div></article>
+          <article class="panel chart-card"><div class="panel-head"><h3>VolÃºmenes por mÃ³dulos y pozos</h3></div><div class="panel-body"><canvas id="chartVolumenes"></canvas></div></article>
         </div>
       </section>
     </section>
@@ -1658,12 +1658,12 @@
       <div class="asset-layout">
         <aside class="asset-nav">
           <h3><i class="fas fa-sitemap"></i> Navegador de activos</h3>
-          <p>Ficha gerencial dinámica para RO, housings y ultrafiltración. Cambia con los filtros activos.</p>
-          <div class="asset-group-title">Ósmosis inversa</div>
+          <p>Ficha gerencial dinÃ¡mica para RO, housings y ultrafiltraciÃ³n. Cambia con los filtros activos.</p>
+          <div class="asset-group-title">Ã“smosis inversa</div>
           <div class="asset-buttons" id="roAssetButtons"></div>
           <div class="asset-group-title">Housings</div>
           <div class="asset-buttons" id="housingAssetButtons"></div>
-          <div class="asset-group-title">Ultrafiltración</div>
+          <div class="asset-group-title">UltrafiltraciÃ³n</div>
           <div class="asset-buttons" id="ufAssetButtons"></div>
         </aside>
         <section>
@@ -1683,7 +1683,7 @@
   <div class="capture-result" id="captureResult" aria-live="polite">
     <div>
       <strong><i class="fas fa-circle-check"></i> Captura lista</strong>
-      <span id="captureResultMessage">Si la descarga automática no aparece, usa el enlace de abajo.</span>
+      <span id="captureResultMessage">Si la descarga automÃ¡tica no aparece, usa el enlace de abajo.</span>
     </div>
     <div class="capture-result-actions">
       <a id="captureDownloadLink" href="#" download="dashboard-gerencial-nexa.png"><i class="fas fa-download"></i> Descargar PNG</a>
@@ -1694,7 +1694,7 @@
 
 <script>
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTid2z1F-w3ShKdbW0Ig16Wyr6UfyA1e-szpOPF_6f3pqLUz2oAcQK-KrZMISb7SpGUvP8Y5EBYLrJ7/pub?gid=501238155&single=true&output=csv";
-const FAST_SHEET_URL = ""; // GitHub Pages usa el CSV publicado como fuente publica.
+const FAST_SHEET_URL = "https://script.google.com/macros/s/AKfycbwwYDdzZxeXtQnSWRNjRd4zUpEUtitaVb9cOlg74W7B7Dy8UKkFsYmOvBO8Xzz05F_W/exec"; // Apps Script JSONP; el CSV publicado queda como respaldo.
 const CAPTURE_SAVE_URL = ""; // En hosting publico la captura se descarga desde el navegador.
 const COL = {
   fecha:0, turbidez:1, tkNuevo:3, tkAntiguo:4, recNuevo:5, recAntiguo:6,
@@ -1747,9 +1747,9 @@ function withCacheBust(url){
 function buildSheetSources(){
   const sources = [];
   if(FAST_SHEET_URL && FAST_SHEET_URL.trim()){
-    sources.push({ label:"Endpoint local", url: withCacheBust(FAST_SHEET_URL.trim()) });
+    sources.push({ label:"Apps Script en vivo", url: FAST_SHEET_URL.trim(), type:"jsonp" });
   }
-  sources.push({ label:"CSV publicado", url: withCacheBust(SHEET_URL) });
+  sources.push({ label:"CSV publicado", url: withCacheBust(SHEET_URL), type:"fetch" });
   return sources;
 }
 async function fetchWithTimeout(url, options={}, timeoutMs=FETCH_TIMEOUT_MS){
@@ -1761,14 +1761,50 @@ async function fetchWithTimeout(url, options={}, timeoutMs=FETCH_TIMEOUT_MS){
     clearTimeout(timer);
   }
 }
+function fetchJsonpCsv(url, timeoutMs=FETCH_TIMEOUT_MS){
+  return new Promise((resolve, reject) => {
+    const callbackName = "__sheetCsv_" + Date.now() + "_" + Math.floor(Math.random() * 1000000);
+    const sep = url.includes("?") ? "&" : "?";
+    const script = document.createElement("script");
+    const timer = setTimeout(() => {
+      cleanup();
+      reject(new Error("Timeout JSONP"));
+    }, timeoutMs);
+
+    function cleanup(){
+      clearTimeout(timer);
+      delete window[callbackName];
+      script.remove();
+    }
+
+    window[callbackName] = payload => {
+      cleanup();
+      const text = typeof payload === "string" ? payload : (payload && payload.csv) || "";
+      resolve(text);
+    };
+
+    script.onerror = () => {
+      cleanup();
+      reject(new Error("No cargó Apps Script"));
+    };
+
+    script.src = `${url}${sep}callback=${encodeURIComponent(callbackName)}&_cb=${Date.now()}_${Math.floor(Math.random() * 1000000)}`;
+    document.head.appendChild(script);
+  });
+}
 async function fetchSheetCsv(){
   const errors = [];
   for(const source of buildSheetSources()){
     try {
-      const response = await fetchWithTimeout(source.url, { cache:"no-store", mode:"cors", redirect:"follow" });
-      if(!response.ok) throw new Error("HTTP " + response.status);
-      const text = await response.text();
-      if(!text || text.length < 50) throw new Error("Respuesta vacía");
+      let text = "";
+      if(source.type === "jsonp"){
+        text = await fetchJsonpCsv(source.url);
+      } else {
+        const response = await fetchWithTimeout(source.url, { cache:"no-store", mode:"cors", redirect:"follow" });
+        if(!response.ok) throw new Error("HTTP " + response.status);
+        text = await response.text();
+      }
+      if(!text || text.length < 50) throw new Error("Respuesta vacÃ­a");
       return { text, label: source.label };
     } catch(error) {
       errors.push(`${source.label}: ${error.message}`);
@@ -1836,7 +1872,7 @@ function getSeleccionInicial(keep={}){
 async function cargarSheets(manual=false){
   const keep = getEstadoFiltros();
   try {
-    setSync('<i class="fas fa-spinner fa-spin"></i>&nbsp; Leyendo datos rápidos...');
+    setSync('<i class="fas fa-spinner fa-spin"></i>&nbsp; Leyendo datos rÃ¡pidos...');
     const fetched = await fetchSheetCsv();
     const txt = fetched.text;
     const rows = parseCSV(txt);
@@ -1877,7 +1913,7 @@ async function cargarSheets(manual=false){
     setSync(`<i class="fas fa-check-circle"></i>&nbsp; ${manual ? "Actualizado manualmente" : "Autoactualizado"}: ${registros.length} registros | ${hora} | ${fetched.label}${cambio ? "" : " | sin cambios"}`, "ok");
   } catch(e) {
     console.error(e);
-    setSync('<i class="fas fa-triangle-exclamation"></i>&nbsp; Sheets no conectado. Revisa publicación CSV.', "err");
+    setSync('<i class="fas fa-triangle-exclamation"></i>&nbsp; Sheets no conectado. Revisa publicaciÃ³n CSV.', "err");
   }
 }
 
@@ -1926,7 +1962,7 @@ function initCharts(){
     type:"line",
     data:{ labels:[], datasets:[
       { label:"Turbidez diaria NTU", data:[], borderColor:"#155f9b", backgroundColor:"rgba(35,141,187,.14)", fill:true, tension:.32, pointRadius:3 },
-      { label:"Límite operativo 5 NTU", data:[], borderColor:"#ef4444", borderDash:[7,5], pointRadius:0 }
+      { label:"LÃ­mite operativo 5 NTU", data:[], borderColor:"#ef4444", borderDash:[7,5], pointRadius:0 }
     ] },
     options:{ ...common, scales:{ y:{ beginAtZero:true } } }
   });
@@ -2015,50 +2051,50 @@ function renderDashboard(){
   $("prodPctRing").innerText = `${format(prodPct,0)}%`;
   $("prodBarFill").style.width = `${prodPctSafe}%`;
   $("prodAchCard").classList.toggle("achieved", prodGoalReached);
-  $("prodReqVal").innerHTML = `${format(prodReq,0)} m³`;
-  $("prodAchVal").innerHTML = `${format(prodAch,0)} m³`;
-  $("prodRestVal").innerHTML = `${format(Math.max(prodReq - prodAch, 0),0)} m³`;
+  $("prodReqVal").innerHTML = `${format(prodReq,0)} mÂ³`;
+  $("prodAchVal").innerHTML = `${format(prodAch,0)} mÂ³`;
+  $("prodRestVal").innerHTML = `${format(Math.max(prodReq - prodAch, 0),0)} mÂ³`;
   $("prodPct").innerText = `Cumplimiento: ${format(prodPct,1)}%`;
-  $("prodGap").innerText = `Diferencia: ${prodGap >= 0 ? "+" : ""}${format(prodGap,0)} m³`;
-  $("kpiGap").innerText = `${prodGap >= 0 ? "+" : ""}${format(prodGap,0)} m³`;
+  $("prodGap").innerText = `Diferencia: ${prodGap >= 0 ? "+" : ""}${format(prodGap,0)} mÂ³`;
+  $("kpiGap").innerText = `${prodGap >= 0 ? "+" : ""}${format(prodGap,0)} mÂ³`;
   $("kpiGapNote").innerText = prodGap >= 0 ? "Meta cubierta" : "Pendiente para cierre";
   $("kpiCriticalRo").innerText = criticalRo.name;
-  $("kpiCriticalRoNote").innerText = criticalRo.value == null ? "Sin lectura" : `${format(criticalRo.value,1)}% recuperación`;
+  $("kpiCriticalRoNote").innerText = criticalRo.value == null ? "Sin lectura" : `${format(criticalRo.value,1)}% recuperaciÃ³n`;
   $("kpiRecProm").innerText = `${format(recProm,1)}%`;
   $("kpiQuality").innerText = `${format(vals.turbidez,2)} NTU`;
   $("kpiQualityNote").innerText = `${turbEvents} eventos sobre 5 NTU`;
 
   if(!prodReqBase){
     $("prodStatus").innerText = "Sin meta";
-    $("execHeadline").innerText = "No se encontró meta de producción requerida.";
-    $("execNarrative").innerText = "Verifique la columna BG del Sheets para activar el análisis de cumplimiento gerencial.";
+    $("execHeadline").innerText = "No se encontrÃ³ meta de producciÃ³n requerida.";
+    $("execNarrative").innerText = "Verifique la columna BG del Sheets para activar el anÃ¡lisis de cumplimiento gerencial.";
   } else if(prodPct >= 100) {
     $("prodStatus").innerText = "Meta alcanzada";
-    $("execHeadline").innerText = "La planta cumple la meta de producción del periodo.";
-    $("execNarrative").innerText = `Se alcanzaron ${format(prodAch,0)} m³ frente a una meta de ${format(prodReq,0)} m³. Mantener control de calidad y disponibilidad de módulos.`;
+    $("execHeadline").innerText = "La planta cumple la meta de producciÃ³n del periodo.";
+    $("execNarrative").innerText = `Se alcanzaron ${format(prodAch,0)} mÂ³ frente a una meta de ${format(prodReq,0)} mÂ³. Mantener control de calidad y disponibilidad de mÃ³dulos.`;
   } else {
     $("prodStatus").innerText = prodPct >= 85 ? "Cerca de meta" : "Bajo objetivo";
-    $("execHeadline").innerText = `Faltan ${format(Math.max(prodReq - prodAch, 0),0)} m³ para cerrar la meta.`;
-    $("execNarrative").innerText = `La prioridad gerencial es recuperar producción sin comprometer calidad. El módulo más crítico es ${criticalRo.name} y la turbidez registra ${turbEvents} eventos sobre el límite.`;
+    $("execHeadline").innerText = `Faltan ${format(Math.max(prodReq - prodAch, 0),0)} mÂ³ para cerrar la meta.`;
+    $("execNarrative").innerText = `La prioridad gerencial es recuperar producciÃ³n sin comprometer calidad. El mÃ³dulo mÃ¡s crÃ­tico es ${criticalRo.name} y la turbidez registra ${turbEvents} eventos sobre el lÃ­mite.`;
   }
 
   $("priorityText").innerText = criticalRo.value != null && criticalRo.value < 20
-    ? `Restituir ${criticalRo.name} antes de aumentar carga en otros módulos`
+    ? `Restituir ${criticalRo.name} antes de aumentar carga en otros mÃ³dulos`
     : prodPct < 85
-      ? "Recuperar brecha de producción antes del cierre de turno"
-      : "Sostener operación y prevenir desviaciones de calidad";
-  $("action1Title").innerText = criticalRo.value != null && criticalRo.value < 20 ? `Intervenir ${criticalRo.name}` : "Cerrar brecha de producción";
-  $("action1Text").innerText = criticalRo.value != null && criticalRo.value < 20 ? `Recuperación en ${format(criticalRo.value,1)}%; validar bomba, presión, flujo y membranas.` : `Pendiente ${format(Math.max(prodReq - prodAch,0),0)} m³ para cumplir la meta.`;
+      ? "Recuperar brecha de producciÃ³n antes del cierre de turno"
+      : "Sostener operaciÃ³n y prevenir desviaciones de calidad";
+  $("action1Title").innerText = criticalRo.value != null && criticalRo.value < 20 ? `Intervenir ${criticalRo.name}` : "Cerrar brecha de producciÃ³n";
+  $("action1Text").innerText = criticalRo.value != null && criticalRo.value < 20 ? `RecuperaciÃ³n en ${format(criticalRo.value,1)}%; validar bomba, presiÃ³n, flujo y membranas.` : `Pendiente ${format(Math.max(prodReq - prodAch,0),0)} mÂ³ para cumplir la meta.`;
   $("action2Title").innerText = "Controlar turbidez";
   $("action2Text").innerText = turbEvents ? `${turbEvents} lecturas superan 5 NTU; revisar pretratamiento UFI/UFN.` : "Sin eventos sobre 5 NTU en el periodo visible.";
   $("action3Title").innerText = "Balancear carga RO";
-  $("action3Text").innerText = `Recuperación promedio ${format(recProm,1)}%; evitar sobrecargar módulos con mejor desempeño.`;
+  $("action3Text").innerText = `RecuperaciÃ³n promedio ${format(recProm,1)}%; evitar sobrecargar mÃ³dulos con mejor desempeÃ±o.`;
 
-  $("sumAguaMar").innerText = `${format(vals.totalAguaMar,0)} m³`;
-  $("sumAguaOsm").innerText = `${format(vals.promAguaOsm,2)} m³`;
+  $("sumAguaMar").innerText = `${format(vals.totalAguaMar,0)} mÂ³`;
+  $("sumAguaOsm").innerText = `${format(vals.promAguaOsm,2)} mÂ³`;
   $("sumCaudal").innerText = format(vals.caudalTotal,2);
-  $("sumUfi").innerText = `${format(vals.ufi,0)} m³`;
-  $("sumUfn").innerText = `${format(vals.ufn,0)} m³`;
+  $("sumUfi").innerText = `${format(vals.ufi,0)} mÂ³`;
+  $("sumUfn").innerText = `${format(vals.ufn,0)} mÂ³`;
   $("sumTkNuevo").innerText = format(vals.tkNuevo,1);
   $("sumTkAntiguo").innerText = format(vals.tkAntiguo,1);
   $("sumRecNuevo").innerText = `${format(vals.recNuevo,1)}%`;
@@ -2067,8 +2103,8 @@ function renderDashboard(){
 
   $("roCards").innerHTML = roList.map(r => {
     const cls = r.value != null && r.value < 20 ? "low" : r.value != null && r.value < 35 ? "warn" : "";
-    const state = r.value != null && r.value < 20 ? "Baja recuperación" : r.value != null && r.value < 35 ? "Revisar tendencia" : "Operación estable";
-    return `<article class="ro-card ${cls}"><div class="ro-top"><strong>${r.name}</strong><span class="tag ${cls === "low" ? "red" : cls === "warn" ? "amber" : "green"}">${state}</span></div><div class="ro-value">${format(r.value,1)}%</div><div class="ro-note">Cond. ${format(r.cond,0)} · Vol. ${format(r.vol,0)}</div><div class="mini-track"><span style="--w:${Math.max(0, Math.min(r.value || 0, 100))}%"></span></div></article>`;
+    const state = r.value != null && r.value < 20 ? "Baja recuperaciÃ³n" : r.value != null && r.value < 35 ? "Revisar tendencia" : "OperaciÃ³n estable";
+    return `<article class="ro-card ${cls}"><div class="ro-top"><strong>${r.name}</strong><span class="tag ${cls === "low" ? "red" : cls === "warn" ? "amber" : "green"}">${state}</span></div><div class="ro-value">${format(r.value,1)}%</div><div class="ro-note">Cond. ${format(r.cond,0)} Â· Vol. ${format(r.vol,0)}</div><div class="mini-track"><span style="--w:${Math.max(0, Math.min(r.value || 0, 100))}%"></span></div></article>`;
   }).join("");
 
   charts.condMod.data.datasets[0].data = [vals.condA, vals.condB, vals.condC, vals.condD, vals.condE];
@@ -2086,42 +2122,42 @@ function renderDashboard(){
 
 function buildModuleAssets(vals, labelPeriodo){
   const base = [
-    { id:"roa", short:"RO A", title:"RO A | Tren de ósmosis inversa", rec:vals.roa, cond:vals.condA, horas:vals.horasA, dif:vals.difA, permeado:vals.permeadoA, concentrado:vals.concentradoA, vol:vals.volA },
-    { id:"rob", short:"RO B", title:"RO B | Tren de ósmosis inversa", rec:vals.rob, cond:vals.condB, horas:vals.horasB, dif:vals.difB, permeado:vals.permeadoB, concentrado:vals.concentradoB, vol:vals.volB },
-    { id:"roc", short:"RO C", title:"RO C | Tren de ósmosis inversa", rec:vals.roc, cond:vals.condC, horas:vals.horasC, dif:vals.difC, permeado:vals.permeadoC, concentrado:vals.concentradoC, vol:vals.volC },
-    { id:"rod", short:"RO D", title:"RO D | Tren de ósmosis inversa", rec:vals.rod, cond:vals.condD, horas:vals.horasD, dif:vals.difD, permeado:vals.permeadoD, concentrado:vals.concentradoD, vol:vals.volD },
-    { id:"roe", short:"RO E", title:"RO E | Tren de ósmosis inversa", rec:vals.roe, cond:vals.condE, horas:vals.horasE, dif:vals.difE, permeado:vals.permeadoE, concentrado:vals.concentradoE, vol:vals.volE }
+    { id:"roa", short:"RO A", title:"RO A | Tren de Ã³smosis inversa", rec:vals.roa, cond:vals.condA, horas:vals.horasA, dif:vals.difA, permeado:vals.permeadoA, concentrado:vals.concentradoA, vol:vals.volA },
+    { id:"rob", short:"RO B", title:"RO B | Tren de Ã³smosis inversa", rec:vals.rob, cond:vals.condB, horas:vals.horasB, dif:vals.difB, permeado:vals.permeadoB, concentrado:vals.concentradoB, vol:vals.volB },
+    { id:"roc", short:"RO C", title:"RO C | Tren de Ã³smosis inversa", rec:vals.roc, cond:vals.condC, horas:vals.horasC, dif:vals.difC, permeado:vals.permeadoC, concentrado:vals.concentradoC, vol:vals.volC },
+    { id:"rod", short:"RO D", title:"RO D | Tren de Ã³smosis inversa", rec:vals.rod, cond:vals.condD, horas:vals.horasD, dif:vals.difD, permeado:vals.permeadoD, concentrado:vals.concentradoD, vol:vals.volD },
+    { id:"roe", short:"RO E", title:"RO E | Tren de Ã³smosis inversa", rec:vals.roe, cond:vals.condE, horas:vals.horasE, dif:vals.difE, permeado:vals.permeadoE, concentrado:vals.concentradoE, vol:vals.volE }
   ];
   currentModuleAssets = {};
   base.forEach((r, i) => {
     const warn = r.rec != null && r.rec < 20;
     currentModuleAssets[r.id] = {
-      title:r.title, short:r.short, category:"Ósmosis inversa", status: warn ? "Recuperación baja" : "En servicio", warn,
-      subtitle:"Módulo principal de producción de agua osmotizada.",
-      note:"Datos leídos directamente desde las columnas H-AM. La ficha cambia con el filtro seleccionado.",
+      title:r.title, short:r.short, category:"Ã“smosis inversa", status: warn ? "RecuperaciÃ³n baja" : "En servicio", warn,
+      subtitle:"MÃ³dulo principal de producciÃ³n de agua osmotizada.",
+      note:"Datos leÃ­dos directamente desde las columnas H-AM. La ficha cambia con el filtro seleccionado.",
       metrics:[
-        ["Recuperación", `${format(r.rec,1)}%`, "Columna H-L"],
+        ["RecuperaciÃ³n", `${format(r.rec,1)}%`, "Columna H-L"],
         ["Conductividad", `${format(r.cond,1)} uS/cm`, "Columnas O-S"],
-        ["Horas operación", `${format(r.horas,1)} h`, "Columnas T-X"],
-        ["Dif. presión", format(r.dif,1), "Columnas Y-AK"],
-        ["Flujo permeado", `${format(r.permeado,1)} m³/h`, "Columnas Z-AL"],
-        ["Flujo concentrado", `${format(r.concentrado,1)} m³/h`, "Columnas AA-AM"],
+        ["Horas operaciÃ³n", `${format(r.horas,1)} h`, "Columnas T-X"],
+        ["Dif. presiÃ³n", format(r.dif,1), "Columnas Y-AK"],
+        ["Flujo permeado", `${format(r.permeado,1)} mÂ³/h`, "Columnas Z-AL"],
+        ["Flujo concentrado", `${format(r.concentrado,1)} mÂ³/h`, "Columnas AA-AM"],
         ["Volumen", format(r.vol,1), "Columnas AN-AR"],
         ["Periodo visible", labelPeriodo, "Filtro actual"]
       ]
     };
     currentModuleAssets["h" + String.fromCharCode(97 + i)] = {
-      title:`Housing ${r.short.split(" ")[1]} | Banco de membranas`, short:"H-" + r.short.split(" ")[1], category:"Housing", status: warn ? "Atención" : "Estable", warn,
+      title:`Housing ${r.short.split(" ")[1]} | Banco de membranas`, short:"H-" + r.short.split(" ")[1], category:"Housing", status: warn ? "AtenciÃ³n" : "Estable", warn,
       subtitle:`Housing asociado al ${r.short}.`,
       note:"Ficha referenciada al RO asociado. Si luego se agregan datos propios del housing, se puede independizar.",
       metrics:[
         ["Asociado a", r.short, "Referencia"],
         ["Conductividad", `${format(r.cond,1)} uS/cm`, "RO asociado"],
-        ["Flujo permeado", `${format(r.permeado,1)} m³/h`, "RO asociado"],
-        ["Flujo concentrado", `${format(r.concentrado,1)} m³/h`, "RO asociado"],
-        ["Dif. presión", format(r.dif,1), "RO asociado"],
-        ["Recuperación", `${format(r.rec,1)}%`, "RO asociado"],
-        ["Horas operación", `${format(r.horas,1)} h`, "RO asociado"],
+        ["Flujo permeado", `${format(r.permeado,1)} mÂ³/h`, "RO asociado"],
+        ["Flujo concentrado", `${format(r.concentrado,1)} mÂ³/h`, "RO asociado"],
+        ["Dif. presiÃ³n", format(r.dif,1), "RO asociado"],
+        ["RecuperaciÃ³n", `${format(r.rec,1)}%`, "RO asociado"],
+        ["Horas operaciÃ³n", `${format(r.horas,1)} h`, "RO asociado"],
         ["Periodo visible", labelPeriodo, "Filtro actual"]
       ]
     };
@@ -2134,17 +2170,17 @@ function buildModuleAssets(vals, labelPeriodo){
   ].forEach(u => {
     const warn = u.turb != null && u.turb > 5;
     currentModuleAssets[u.id] = {
-      title:`${u.short} | Ultrafiltración`, short:u.short, category:"Ultrafiltración", status: warn ? "Turbidez alta" : "En servicio", warn,
+      title:`${u.short} | UltrafiltraciÃ³n`, short:u.short, category:"UltrafiltraciÃ³n", status: warn ? "Turbidez alta" : "En servicio", warn,
       subtitle:"Unidad de pretratamiento y control de calidad previa a los trenes RO.",
-      note:"Ficha alimentada por columnas de turbidez, diferencial de presión y producción UFI/UFN.",
+      note:"Ficha alimentada por columnas de turbidez, diferencial de presiÃ³n y producciÃ³n UFI/UFN.",
       metrics:[
         ["Turbidez", `${format(u.turb,2)} NTU`, "Calidad"],
-        ["Dif. presión", format(u.dp,2), "UFI"],
-        ["Producción", format(u.prod,2), "Producción"],
-        ["Estado", warn ? "Revisar" : "Operativo", "Según turbidez"],
-        ["Totalizador UFI", `${format(vals.ufi,0)} m³`, "M"],
-        ["Totalizador UFN", `${format(vals.ufn,0)} m³`, "N"],
-        ["Destino", "RO A - E", "Distribución"],
+        ["Dif. presiÃ³n", format(u.dp,2), "UFI"],
+        ["ProducciÃ³n", format(u.prod,2), "ProducciÃ³n"],
+        ["Estado", warn ? "Revisar" : "Operativo", "SegÃºn turbidez"],
+        ["Totalizador UFI", `${format(vals.ufi,0)} mÂ³`, "M"],
+        ["Totalizador UFN", `${format(vals.ufn,0)} mÂ³`, "N"],
+        ["Destino", "RO A - E", "DistribuciÃ³n"],
         ["Periodo visible", labelPeriodo, "Filtro actual"]
       ]
     };
@@ -2204,7 +2240,7 @@ function showCaptureResult(blob, filename){
   const link = $("captureDownloadLink");
   link.href = lastCaptureUrl;
   link.download = filename;
-  $("captureResultMessage").textContent = "Si la descarga automática no aparece, usa el enlace de abajo.";
+  $("captureResultMessage").textContent = "Si la descarga automÃ¡tica no aparece, usa el enlace de abajo.";
   $("captureResult").classList.add("active");
   return link;
 }
@@ -2239,7 +2275,7 @@ async function captureDashboard(){
   const btn = $("captureBtn");
   const original = btn.innerHTML;
   try {
-    if(typeof html2canvas === "undefined") throw new Error("La librería de captura no cargó. Verifica conexión a internet.");
+    if(typeof html2canvas === "undefined") throw new Error("La librerÃ­a de captura no cargÃ³. Verifica conexiÃ³n a internet.");
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Capturando...';
     closeCaptureResult();
@@ -2264,7 +2300,7 @@ async function captureDashboard(){
     if(saved && saved.ok){
       visibleLink.href = saved.url;
       visibleLink.download = saved.filename || filename;
-      setCaptureMessage(`Guardado automáticamente en: ${saved.file}. Si quieres otra copia, usa el enlace.`);
+      setCaptureMessage(`Guardado automÃ¡ticamente en: ${saved.file}. Si quieres otra copia, usa el enlace.`);
     }
 
     const autoLink = document.createElement("a");
@@ -2291,3 +2327,4 @@ window.addEventListener("load", () => {
 </script>
 </body>
 </html>
+
