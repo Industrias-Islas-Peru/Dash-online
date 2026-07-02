@@ -1809,6 +1809,30 @@ function getEstadoFiltros(){
   return { vista: $("vista")?.value, anio: $("anio")?.value, mes: $("mes")?.value, fecha: $("fecha")?.value };
 }
 
+function getSeleccionInicial(keep={}){
+  const keepRecord = keep.fecha ? registros.find(r => r.iso === keep.fecha) : null;
+  if(keepRecord){
+    return {
+      vista: keep.vista || "dia",
+      anio: String(keepRecord.anio),
+      mes: String(keepRecord.mes),
+      fecha: keepRecord.iso
+    };
+  }
+
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const todayIso = isoDate(today);
+  const todayRecord = registros.find(r => r.iso === todayIso);
+  const fallback = todayRecord || [...registros].reverse().find(r => r.fecha <= today) || registros[registros.length - 1];
+  return {
+    vista: "dia",
+    anio: String(fallback.anio),
+    mes: String(fallback.mes),
+    fecha: fallback.iso
+  };
+}
+
 async function cargarSheets(manual=false){
   const keep = getEstadoFiltros();
   try {
@@ -1858,11 +1882,12 @@ async function cargarSheets(manual=false){
 }
 
 function llenarFiltros(keep={}){
+  const seleccion = getSeleccionInicial(keep);
   const anios = [...new Set(registros.map(r => r.anio))].sort((a,b)=>a-b);
   $("anio").innerHTML = anios.map(a => `<option value="${a}">${a}</option>`).join("");
-  $("anio").value = anios.includes(+keep.anio) ? keep.anio : anios[anios.length - 1];
-  if(keep.vista) $("vista").value = keep.vista;
-  refrescarMesFecha(keep);
+  $("anio").value = anios.includes(+seleccion.anio) ? seleccion.anio : anios[anios.length - 1];
+  $("vista").value = seleccion.vista;
+  refrescarMesFecha(seleccion);
 }
 function refrescarMesFecha(keep={}){
   const anio = +$("anio").value;
