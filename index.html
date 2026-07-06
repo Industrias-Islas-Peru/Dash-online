@@ -2036,20 +2036,22 @@ function renderDashboard(){
     { name:"RO E", key:"roe", value:vals.roe, cond:vals.condE, vol:vals.volE }
   ];
   const validRos = roList.filter(r => r.value != null);
+  const activeRos = roList.filter(r => r.value != null && r.value > 0);
   const criticalRo = validRos.length ? validRos.reduce((a,b) => a.value <= b.value ? a : b) : { name:"--", value:null };
-  const recProm = avg(roList.map(r => r.value));
+  const recProm = avg(activeRos.map(r => r.value));
   const turbEvents = periodo.filter(r => r.turbidez != null && r.turbidez > 5).length;
-  const riskHigh = prodPct < 85 || (criticalRo.value != null && criticalRo.value < 20) || turbEvents > 0;
+  const riskHigh = prodPct < 100 || (criticalRo.value != null && criticalRo.value < 36) || turbEvents > 0;
 
   $("periodLabel").innerText = labelPeriodo;
   $("resumenPeriodo").innerText = labelPeriodo;
   $("topRiskChip").innerHTML = riskHigh ? '<i class="fas fa-triangle-exclamation"></i> Riesgo operativo alto' : '<i class="fas fa-circle-check"></i> Riesgo controlado';
   $("topRiskChip").className = "chip " + (riskHigh ? "warn" : "ok");
 
-  const ringColor = prodPct >= 100 ? "#238dbb" : prodPct >= 85 ? "#f59e0b" : "#ef4444";
+  const ringColor = prodPct >= 100 ? "#12b76a" : "#ef4444";
   $("prodRing").style.background = `conic-gradient(${ringColor} ${prodPctSafe * 3.6}deg, #dde8f2 ${prodPctSafe * 3.6}deg)`;
   $("prodPctRing").innerText = `${format(prodPct,0)}%`;
   $("prodBarFill").style.width = `${prodPctSafe}%`;
+  $("prodBarFill").style.background = ringColor;
   $("prodAchCard").classList.toggle("achieved", prodGoalReached);
   $("prodReqVal").innerHTML = `${format(prodReq,0)} m3`;
   $("prodAchVal").innerHTML = `${format(prodAch,0)} m3`;
@@ -2078,13 +2080,13 @@ function renderDashboard(){
     $("execNarrative").innerText = `La prioridad gerencial es recuperar produccion sin comprometer calidad. El modulo mas critico es ${criticalRo.name} y la turbidez registra ${turbEvents} eventos sobre el limite.`;
   }
 
-  $("priorityText").innerText = criticalRo.value != null && criticalRo.value < 20
+  $("priorityText").innerText = criticalRo.value != null && criticalRo.value < 36
     ? `Restituir ${criticalRo.name} antes de aumentar carga en otros modulos`
     : prodPct < 85
       ? "Recuperar brecha de produccion antes del cierre de turno"
       : "Sostener operacion y prevenir desviaciones de calidad";
-  $("action1Title").innerText = criticalRo.value != null && criticalRo.value < 20 ? `Intervenir ${criticalRo.name}` : "Cerrar brecha de produccion";
-  $("action1Text").innerText = criticalRo.value != null && criticalRo.value < 20 ? `Recuperacion en ${format(criticalRo.value,1)}%; validar bomba, presion, flujo y membranas.` : `Pendiente ${format(Math.max(prodReq - prodAch,0),0)} m3 para cumplir la meta.`;
+  $("action1Title").innerText = criticalRo.value != null && criticalRo.value < 36 ? `Intervenir ${criticalRo.name}` : "Cerrar brecha de produccion";
+  $("action1Text").innerText = criticalRo.value != null && criticalRo.value < 36 ? `Recuperacion en ${format(criticalRo.value,1)}%; validar bomba, presion, flujo y membranas.` : `Pendiente ${format(Math.max(prodReq - prodAch,0),0)} m3 para cumplir la meta.`;
   $("action2Title").innerText = "Controlar turbidez";
   $("action2Text").innerText = turbEvents ? `${turbEvents} lecturas superan 5 NTU; revisar pretratamiento UFI/UFN.` : "Sin eventos sobre 5 NTU en el periodo visible.";
   $("action3Title").innerText = "Balancear carga RO";
@@ -2102,12 +2104,14 @@ function renderDashboard(){
   $("sumTurbEvents").innerText = String(turbEvents);
 
   $("roCards").innerHTML = roList.map(r => {
-    const cls = r.value != null && r.value < 20 ? "low" : r.value != null && r.value < 35 ? "warn" : "";
-    const state = r.value != null && r.value < 20 ? "Baja recuperacion" : r.value != null && r.value < 35 ? "Revisar tendencia" : "Operacion estable";
+    const cls = r.value != null && r.value < 36 ? "low" : "";
+    const state = r.value != null && r.value < 36 ? "Baja recuperacion" : "Operacion estable";
     return `<article class="ro-card ${cls}"><div class="ro-top"><strong>${r.name}</strong><span class="tag ${cls === "low" ? "red" : cls === "warn" ? "amber" : "green"}">${state}</span></div><div class="ro-value">${format(r.value,1)}%</div><div class="ro-note">Cond. ${format(r.cond,0)} ? Vol. ${format(r.vol,0)}</div><div class="mini-track"><span style="--w:${Math.max(0, Math.min(r.value || 0, 100))}%"></span></div></article>`;
   }).join("");
 
-  charts.condMod.data.datasets[0].data = [vals.condA, vals.condB, vals.condC, vals.condD, vals.condE];
+  const condData = [vals.condA, vals.condB, vals.condC, vals.condD, vals.condE];
+  charts.condMod.data.datasets[0].data = condData;
+  charts.condMod.data.datasets[0].backgroundColor = condData.map((v, i) => v != null && v > 1500 ? "#ef4444" : ["#155f9b","#238dbb","#68b9d7","#0f4f86","#8bcce1"][i]);
   charts.condMod.update();
   charts.turbidezMes.data.labels = mesData.map(r => String(r.dia).padStart(2,"0"));
   charts.turbidezMes.data.datasets[0].data = mesData.map(r => r.turbidez);
@@ -2130,7 +2134,7 @@ function buildModuleAssets(vals, labelPeriodo){
   ];
   currentModuleAssets = {};
   base.forEach((r, i) => {
-    const warn = r.rec != null && r.rec < 20;
+    const warn = r.rec != null && r.rec < 36;
     currentModuleAssets[r.id] = {
       title:r.title, short:r.short, category:"Osmosis inversa", status: warn ? "Recuperacion baja" : "En servicio", warn,
       subtitle:"Modulo principal de produccion de agua osmotizada.",
