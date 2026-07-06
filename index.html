@@ -595,7 +595,7 @@
       min-height: 118px;
       padding: 13px;
       border: 1px solid var(--line);
-      border-top: 4px solid var(--cyan);
+      border-top: 4px solid var(--green);
       border-radius: var(--radius);
       background: #fff;
       box-shadow: 0 10px 22px rgba(13, 27, 42, .08);
@@ -629,7 +629,7 @@
       height: 7px;
       margin-top: 12px;
       border-radius: 999px;
-      background: #dcebf4;
+      background: #dff8ea;
       overflow: hidden;
     }
 
@@ -637,7 +637,7 @@
       display: block;
       width: var(--w);
       height: 100%;
-      background: var(--cyan);
+      background: var(--green);
     }
 
     .ro-card.low .mini-track { background: #ffe0e0; }
@@ -1029,7 +1029,7 @@
     .tag { color: #dff7ff; background: rgba(139, 204, 225, .13); }
     .tag.red { color: #ffdada; background: rgba(239, 68, 68, .18); }
     .tag.amber { color: #ffe9ad; background: rgba(245, 158, 11, .18); }
-    .tag.green { color: #bceeff; background: rgba(35, 141, 187, .20); }
+    .tag.green { color: #c8f7dc; background: rgba(18, 183, 106, .22); }
 
     .bar-track,
     .mini-track {
@@ -1165,8 +1165,8 @@
     .prod-card:nth-child(2),
     .ro-card:not(.low):not(.warn) {
       background:
-        linear-gradient(135deg, rgba(35, 141, 187, .20), rgba(255, 255, 255, .025)),
-        linear-gradient(180deg, rgba(31, 76, 103, .98), rgba(22, 55, 79, .98));
+        linear-gradient(135deg, rgba(18, 183, 106, .22), rgba(255, 255, 255, .025)),
+        linear-gradient(180deg, rgba(28, 86, 76, .98), rgba(20, 65, 61, .98));
     }
 
     .exec-kpi.purple {
@@ -1199,8 +1199,8 @@
     }
 
     .tag.green {
-      color: #dff7ff;
-      background: rgba(35, 141, 187, .24);
+      color: #c8f7dc;
+      background: rgba(18, 183, 106, .24);
     }
 
     .ring::before {
@@ -1264,8 +1264,8 @@
     .prod-card:nth-child(2),
     .ro-card:not(.low):not(.warn) {
       background:
-        linear-gradient(135deg, rgba(104, 185, 215, .23), rgba(255, 255, 255, .030)),
-        linear-gradient(180deg, rgba(37, 91, 119, .98), rgba(29, 74, 103, .98));
+        linear-gradient(135deg, rgba(18, 183, 106, .24), rgba(255, 255, 255, .030)),
+        linear-gradient(180deg, rgba(31, 98, 84, .98), rgba(24, 78, 70, .98));
     }
 
     .ring::before {
@@ -1402,7 +1402,7 @@
     .prod-card:nth-child(2),
     .ro-card:not(.low):not(.warn) {
       background:
-        linear-gradient(135deg, rgba(232, 247, 253, .96), rgba(255, 255, 255, .92));
+        linear-gradient(135deg, rgba(232, 249, 239, .96), rgba(255, 255, 255, .92));
     }
 
     .exec-kpi.purple {
@@ -1440,7 +1440,25 @@
     .tag { color: #456176; background: #eef6fb; }
     .tag.red { color: #b42318; background: #ffecec; }
     .tag.amber { color: #936300; background: #fff3cc; }
-    .tag.green { color: #086d8d; background: #e0f5fb; }
+    .tag.green { color: #08764f; background: #e1f8ef; }
+
+    .ro-card:not(.low):not(.warn) {
+      border-top-color: var(--green);
+      box-shadow: 0 14px 28px rgba(18, 183, 106, .13), inset 0 1px 0 rgba(255, 255, 255, .88);
+    }
+
+    .ro-card:not(.low):not(.warn) .ro-value,
+    .ro-card:not(.low):not(.warn) .ro-top strong {
+      color: #08764f;
+    }
+
+    .ro-card:not(.low):not(.warn) .mini-track {
+      background: #dff8ea;
+    }
+
+    .ro-card:not(.low):not(.warn) .mini-track span {
+      background: var(--green);
+    }
 
     .asset-nav {
       background:
@@ -2106,7 +2124,7 @@ function renderDashboard(){
   $("roCards").innerHTML = roList.map(r => {
     const cls = r.value != null && r.value < 36 ? "low" : "";
     const state = r.value != null && r.value < 36 ? "Baja recuperacion" : "Operacion estable";
-    return `<article class="ro-card ${cls}"><div class="ro-top"><strong>${r.name}</strong><span class="tag ${cls === "low" ? "red" : cls === "warn" ? "amber" : "green"}">${state}</span></div><div class="ro-value">${format(r.value,1)}%</div><div class="ro-note">Cond. ${format(r.cond,0)} ? Vol. ${format(r.vol,0)}</div><div class="mini-track"><span style="--w:${Math.max(0, Math.min(r.value || 0, 100))}%"></span></div></article>`;
+    return `<article class="ro-card ${cls}"><div class="ro-top"><strong>${r.name}</strong><span class="tag ${cls === "low" ? "red" : cls === "warn" ? "amber" : "green"}">${state}</span></div><div class="ro-value">${format(r.value,1)}%</div><div class="ro-note">Cond. ${format(r.cond,0)} - Vol. ${format(r.vol,0)}</div><div class="mini-track"><span style="--w:${Math.max(0, Math.min(r.value || 0, 100))}%"></span></div></article>`;
   }).join("");
 
   const condData = [vals.condA, vals.condB, vals.condC, vals.condD, vals.condE];
