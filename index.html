@@ -357,6 +357,7 @@
     }
 
     .exec-kpi.red { border-left-color: var(--red); }
+    .exec-kpi.blue { border-left-color: var(--blue); }
     .exec-kpi.green { border-left-color: var(--cyan); }
     .exec-kpi.amber { border-left-color: var(--amber); }
     .exec-kpi.purple { border-left-color: var(--purple); }
@@ -1161,6 +1162,12 @@
         linear-gradient(180deg, rgba(38, 71, 91, .98), rgba(24, 51, 73, .98));
     }
 
+    .exec-kpi.blue {
+      background:
+        linear-gradient(135deg, rgba(35, 141, 187, .22), rgba(255, 255, 255, .025)),
+        linear-gradient(180deg, rgba(31, 78, 108, .98), rgba(22, 61, 92, .98));
+    }
+
     .exec-kpi.green,
     .prod-card:nth-child(2),
     .ro-card:not(.low):not(.warn) {
@@ -1258,6 +1265,12 @@
       background:
         linear-gradient(135deg, rgba(245, 158, 11, .17), rgba(255, 255, 255, .030)),
         linear-gradient(180deg, rgba(45, 86, 108, .98), rgba(31, 70, 98, .98));
+    }
+
+    .exec-kpi.blue {
+      background:
+        linear-gradient(135deg, rgba(35, 141, 187, .24), rgba(255, 255, 255, .030)),
+        linear-gradient(180deg, rgba(35, 91, 120, .98), rgba(27, 76, 108, .98));
     }
 
     .exec-kpi.green,
@@ -1396,6 +1409,11 @@
     .ro-card.warn {
       background:
         linear-gradient(135deg, rgba(255, 249, 232, .96), rgba(255, 255, 255, .92));
+    }
+
+    .exec-kpi.blue {
+      background:
+        linear-gradient(135deg, rgba(229, 246, 253, .96), rgba(255, 255, 255, .92));
     }
 
     .exec-kpi.green,
@@ -1588,7 +1606,7 @@
               <p id="execNarrative">El tablero conectar? con Google Sheets y resumir? el estado ejecutivo del turno.</p>
               <div class="exec-kpis">
                 <div class="exec-kpi red"><small>Brecha produccion</small><strong id="kpiGap">--</strong><span id="kpiGapNote">Meta vs alcanzado</span></div>
-                <div class="exec-kpi amber"><small>RO critico</small><strong id="kpiCriticalRo">--</strong><span id="kpiCriticalRoNote">Modulo con menor recuperacion</span></div>
+                <div class="exec-kpi blue"><small>Conductividad Estacion 1</small><strong id="kpiCondEstacion1">--</strong><span id="kpiCondEstacion1Note">Columna BJ</span></div>
                 <div class="exec-kpi green"><small>Recuperacion promedio</small><strong id="kpiRecProm">--</strong><span>RO A - RO E</span></div>
                 <div class="exec-kpi purple"><small>Calidad</small><strong id="kpiQuality">--</strong><span id="kpiQualityNote">Turbidez del periodo</span></div>
               </div>
@@ -1729,7 +1747,7 @@ const COL = {
   dpUfi1:48, dpUfi2:49, dpUfi3:50,
   prodUfi1:51, prodUfi2:52, prodUfi3:53, prodUfn:54,
   promAguaOsm:55, totalAguaMar:56, prodAlcanzada:57, prodRequerida:58,
-  pozo1:59, pozo4:60
+  pozo1:59, pozo4:60, condEstacion1:61
 };
 const MESES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 const AUTO_REFRESH_MS = 5000;
@@ -1916,7 +1934,7 @@ async function cargarSheets(manual=false){
         prodUfi1: toNum(f[COL.prodUfi1]), prodUfi2: toNum(f[COL.prodUfi2]), prodUfi3: toNum(f[COL.prodUfi3]), prodUfn: toNum(f[COL.prodUfn]),
         promAguaOsm: toNum(f[COL.promAguaOsm]), totalAguaMar: toNum(f[COL.totalAguaMar]),
         prodAlcanzada: toNum(f[COL.prodAlcanzada]), prodRequerida: toNum(f[COL.prodRequerida]),
-        pozo1: toNum(f[COL.pozo1]), pozo4: toNum(f[COL.pozo4])
+        pozo1: toNum(f[COL.pozo1]), pozo4: toNum(f[COL.pozo4]), condEstacion1: toNum(f[COL.condEstacion1])
       };
     }).filter(x => x.fecha).sort((a,b) => a.fecha - b.fecha);
 
@@ -2020,7 +2038,7 @@ function getVals(periodo, diaData, vista){
     permeadoA: val("permeadoA"), permeadoB: val("permeadoB"), permeadoC: val("permeadoC"), permeadoD: val("permeadoD"), permeadoE: val("permeadoE"),
     concentradoA: val("concentradoA"), concentradoB: val("concentradoB"), concentradoC: val("concentradoC"), concentradoD: val("concentradoD"), concentradoE: val("concentradoE"),
     volA: val("volA"), volB: val("volB"), volC: val("volC"), volD: val("volD"), volE: val("volE"),
-    pozo1: val("pozo1"), pozo4: val("pozo4"),
+    pozo1: val("pozo1"), pozo4: val("pozo4"), condEstacion1: val("condEstacion1"),
     caudalTotal: val("caudalTotal"), promAguaOsm: val("promAguaOsm"), totalAguaMar: val("totalAguaMar","last"),
     turbUfi1: val("turbUfi1"), turbUfi2: val("turbUfi2"), turbUfi3: val("turbUfi3"),
     dpUfi1: val("dpUfi1"), dpUfi2: val("dpUfi2"), dpUfi3: val("dpUfi3"),
@@ -2044,6 +2062,7 @@ function renderDashboard(){
   const prodAch = vals.prodAlcanzada || 0;
   const prodPct = prodReq > 0 ? prodAch / prodReq * 100 : 0;
   const prodPctSafe = Math.max(0, Math.min(prodPct, 100));
+  const prodPctShown = prodPctSafe;
   const prodGap = prodAch - prodReq;
   const prodGoalReached = prodReq > 0 && prodAch >= prodReq;
   const roList = [
@@ -2067,19 +2086,19 @@ function renderDashboard(){
 
   const ringColor = prodPct >= 100 ? "#12b76a" : "#ef4444";
   $("prodRing").style.background = `conic-gradient(${ringColor} ${prodPctSafe * 3.6}deg, #dde8f2 ${prodPctSafe * 3.6}deg)`;
-  $("prodPctRing").innerText = `${format(prodPct,0)}%`;
+  $("prodPctRing").innerText = `${format(prodPctShown,0)}%`;
   $("prodBarFill").style.width = `${prodPctSafe}%`;
   $("prodBarFill").style.background = ringColor;
   $("prodAchCard").classList.toggle("achieved", prodGoalReached);
   $("prodReqVal").innerHTML = `${format(prodReq,0)} m3`;
   $("prodAchVal").innerHTML = `${format(prodAch,0)} m3`;
   $("prodRestVal").innerHTML = `${format(Math.max(prodReq - prodAch, 0),0)} m3`;
-  $("prodPct").innerText = `Cumplimiento: ${format(prodPct,1)}%`;
+  $("prodPct").innerText = `Cumplimiento: ${format(prodPctShown,1)}%`;
   $("prodGap").innerText = `Diferencia: ${prodGap >= 0 ? "+" : ""}${format(prodGap,0)} m3`;
   $("kpiGap").innerText = `${prodGap >= 0 ? "+" : ""}${format(prodGap,0)} m3`;
   $("kpiGapNote").innerText = prodGap >= 0 ? "Meta cubierta" : "Pendiente para cierre";
-  $("kpiCriticalRo").innerText = criticalRo.name;
-  $("kpiCriticalRoNote").innerText = criticalRo.value == null ? "Sin lectura" : `${format(criticalRo.value,1)}% recuperacion`;
+  $("kpiCondEstacion1").innerText = vals.condEstacion1 == null ? "--" : `${format(vals.condEstacion1,0)} uS/cm`;
+  $("kpiCondEstacion1Note").innerText = vals.condEstacion1 == null ? "Sin lectura en BJ" : "Lectura promedio del periodo";
   $("kpiRecProm").innerText = `${format(recProm,1)}%`;
   $("kpiQuality").innerText = `${format(vals.turbidez,2)} NTU`;
   $("kpiQualityNote").innerText = `${turbEvents} eventos sobre 5 NTU`;
