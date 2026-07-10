@@ -358,7 +358,7 @@
 
     .exec-kpi.red { border-left-color: var(--red); }
     .exec-kpi.blue { border-left-color: var(--blue); }
-    .exec-kpi.green { border-left-color: var(--cyan); }
+    .exec-kpi.green { border-left-color: var(--green); }
     .exec-kpi.amber { border-left-color: var(--amber); }
     .exec-kpi.purple { border-left-color: var(--purple); }
 
@@ -2097,8 +2097,11 @@ function renderDashboard(){
   $("prodGap").innerText = `Diferencia: ${prodGap >= 0 ? "+" : ""}${format(prodGap,0)} m3`;
   $("kpiGap").innerText = `${prodGap >= 0 ? "+" : ""}${format(prodGap,0)} m3`;
   $("kpiGapNote").innerText = prodGap >= 0 ? "Meta cubierta" : "Pendiente para cierre";
+  const condEstacionCard = $("kpiCondEstacion1").closest(".exec-kpi");
+  const condEstacionOk = vals.condEstacion1 != null && vals.condEstacion1 <= 1500;
+  condEstacionCard.className = "exec-kpi " + (vals.condEstacion1 == null ? "blue" : condEstacionOk ? "green" : "red");
   $("kpiCondEstacion1").innerText = vals.condEstacion1 == null ? "--" : `${format(vals.condEstacion1,0)} uS/cm`;
-  $("kpiCondEstacion1Note").innerText = vals.condEstacion1 == null ? "Sin lectura en BJ" : "Lectura promedio del periodo";
+  $("kpiCondEstacion1Note").innerText = vals.condEstacion1 == null ? "Sin lectura en BJ" : condEstacionOk ? "Dentro del limite <= 1500" : "Sobre limite > 1500";
   $("kpiRecProm").innerText = `${format(recProm,1)}%`;
   $("kpiQuality").innerText = `${format(vals.turbidez,2)} NTU`;
   $("kpiQualityNote").innerText = `${turbEvents} eventos sobre 5 NTU`;
@@ -2148,7 +2151,7 @@ function renderDashboard(){
 
   const condData = [vals.condA, vals.condB, vals.condC, vals.condD, vals.condE];
   charts.condMod.data.datasets[0].data = condData;
-  charts.condMod.data.datasets[0].backgroundColor = condData.map((v, i) => v != null && v > 1500 ? "#ef4444" : ["#155f9b","#238dbb","#68b9d7","#0f4f86","#8bcce1"][i]);
+  charts.condMod.data.datasets[0].backgroundColor = condData.map(v => v == null ? "#94a3b8" : v > 1500 ? "#ef4444" : "#12b76a");
   charts.condMod.update();
   charts.turbidezMes.data.labels = mesData.map(r => String(r.dia).padStart(2,"0"));
   charts.turbidezMes.data.datasets[0].data = mesData.map(r => r.turbidez);
