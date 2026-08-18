@@ -289,9 +289,17 @@
       display: grid;
       place-items: center;
       border-radius: 50%;
-      background: conic-gradient(var(--green) 0deg, #dde8f2 0deg);
+      background: #edf4fa;
       box-shadow: 0 18px 34px rgba(13, 27, 42, .14);
       position: relative;
+    }
+
+    .ring-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
     }
 
     .ring::before {
@@ -300,10 +308,12 @@
       inset: 13px;
       border-radius: 50%;
       background: #fff;
+      z-index: 1;
     }
 
     .ring-content {
       position: relative;
+      z-index: 2;
       text-align: center;
     }
 
@@ -1596,6 +1606,7 @@
         <article class="panel">
           <div class="panel-body decision-hero">
             <div class="ring" id="prodRing">
+              <canvas class="ring-canvas" id="prodRingCanvas" width="296" height="296" aria-hidden="true"></canvas>
               <div class="ring-content">
                 <strong id="prodPctRing">--</strong>
                 <span>Cumplimiento</span>
@@ -1713,7 +1724,7 @@
       </div>
     </section>
 
-    <div class="footer-note">Datos leidos desde Google Sheets publicado. Refresco automatico cada 5 segundos.</div>
+    <div class="footer-note">Datos leidos desde Google Sheets publicado. Refresco automatico cada 5 segundos. Version captura canvas 2026-08-17.</div>
   </main>
 
   <div class="capture-result" id="captureResult" aria-live="polite">
@@ -1729,29 +1740,30 @@
   </div>
 
 <script>
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTid2z1F-w3ShKdbW0Ig16Wyr6UfyA1e-szpOPF_6f3pqLUz2oAcQK-KrZMISb7SpGUvP8Y5EBYLrJ7/pub?gid=501238155&single=true&output=csv";
-const FAST_SHEET_URL = "https://script.google.com/macros/s/AKfycbwwYDdzZxeXtQnSWRNjRd4zUpEUtitaVb9cOlg74W7B7Dy8UKkFsYmOvBO8Xzz05F_W/exec"; // Apps Script JSONP; el CSV publicado queda como respaldo.
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/14gRV6bJBCoe_aG16q8UeRjC5dqWMvzL34KZY76fSwR4/gviz/tq?tqx=out:csv&gid=0";
+const FAST_SHEET_URL = ""; // Desactivado: el endpoint anterior devolvia solo hasta julio. Se usa el CSV nuevo del Sheet.
 const CAPTURE_SAVE_URL = ""; // En hosting publico la captura se descarga desde el navegador.
 const COL = {
-  fecha:0, turbidez:1, tkNuevo:3, tkAntiguo:4, recNuevo:5, recAntiguo:6,
-  roa:7, rob:8, roc:9, rod:10, roe:11, ufi:12, ufn:13,
-  condA:14, condB:15, condC:16, condD:17, condE:18,
-  horasA:19, horasB:20, horasC:21, horasD:22, horasE:23,
-  difA:24, permeadoA:25, concentradoA:26,
-  difB:27, permeadoB:28, concentradoB:29,
-  difC:30, permeadoC:31, concentradoC:32,
-  difD:33, permeadoD:34, concentradoD:35,
-  difE:36, permeadoE:37, concentradoE:38,
-  volA:39, volB:40, volC:41, volD:42, volE:43,
-  caudalTotal:44, turbUfi1:45, turbUfi2:46, turbUfi3:47,
-  dpUfi1:48, dpUfi2:49, dpUfi3:50,
-  prodUfi1:51, prodUfi2:52, prodUfi3:53, prodUfn:54,
-  promAguaOsm:55, totalAguaMar:56, prodAlcanzada:57, prodRequerida:58,
-  pozo1:59, pozo4:60, condEstacion1:61
+  fecha:0, turbidez:24, tkNuevo:220, tkAntiguo:221, recNuevo:222, recAntiguo:223,
+  condA:102, condB:104, condC:106, condD:108, condE:110,
+  horasA:171, horasB:172, horasC:173, horasD:174, horasE:175,
+  difA:179, permeadoA:181, concentradoA:182,
+  difB:186, permeadoB:188, concentradoB:189,
+  difC:193, permeadoC:195, concentradoC:196,
+  difD:200, permeadoD:202, concentradoD:203,
+  difE:207, permeadoE:210, concentradoE:211,
+  volA:93, volB:95, volC:97, volD:99, volE:101,
+  caudalTotal:6, turbUfi1:51, turbUfi2:52, turbUfi3:53,
+  dpUfi1:54, dpUfi2:55, dpUfi3:56,
+  prodUfi1:70, prodUfi2:72, prodUfi3:74, prodUfn:84,
+  promAguaOsm:91, totalAguaMar:11, prodAlcanzada:65,
+  pozo1:112, pozo4:113, condEstacion1:125
 };
+const DEFAULT_PROD_REQUERIDA = 3326;
 const MESES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 const AUTO_REFRESH_MS = 5000;
 const FETCH_TIMEOUT_MS = 9000;
+const RING_RADIUS = 65;
 let registros = [];
 let charts = {};
 let ultimoCSV = "";
@@ -1776,6 +1788,10 @@ function format(n, dec=1){
 function avg(arr){ const v = arr.filter(x => x != null && Number.isFinite(x)); return v.length ? v.reduce((a,b)=>a+b,0) / v.length : null; }
 function sum(arr){ const v = arr.filter(x => x != null && Number.isFinite(x)); return v.length ? v.reduce((a,b)=>a+b,0) : null; }
 function lastVal(arr){ for(let i = arr.length - 1; i >= 0; i--){ if(arr[i] != null && Number.isFinite(arr[i])) return arr[i]; } return null; }
+function calcRecovery(permeado, concentrado){
+  const total = (permeado || 0) + (concentrado || 0);
+  return total > 0 ? (permeado / total) * 100 : 0;
+}
 function setSync(txt, cls=""){ $("syncStatus").className = "sync " + cls; $("syncStatus").innerHTML = txt; }
 function withCacheBust(url){
   return url + (url.includes("?") ? "&" : "?") + "_cb=" + Date.now() + "_" + Math.floor(Math.random() * 1000000);
@@ -1874,6 +1890,9 @@ function parseFecha(s){
   const d = new Date(s);
   return isNaN(d) ? null : new Date(d.getFullYear(), d.getMonth(), d.getDate());
 }
+function getFechaFila(f){
+  return parseFecha(f[COL.fecha]) || parseFecha(f[1]) || parseFecha(f[0]);
+}
 function isoDate(d){ return d ? `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}` : ""; }
 function displayDate(d){ return d ? d.toLocaleDateString("es-PE", { day:"2-digit", month:"2-digit", year:"numeric" }) : "--"; }
 
@@ -1906,34 +1925,43 @@ function getSeleccionInicial(keep={}){
 }
 
 async function cargarSheets(manual=false){
-  const keep = getEstadoFiltros();
+  const filtrosActuales = getEstadoFiltros();
+  const ultimaFechaAntes = registros.length ? registros[registros.length - 1].iso : "";
+  const estabaEnUltimaFecha = filtrosActuales.fecha && ultimaFechaAntes && filtrosActuales.fecha === ultimaFechaAntes;
+  const keep = manual || estabaEnUltimaFecha ? {} : filtrosActuales;
   try {
     setSync('<i class="fas fa-spinner fa-spin"></i>&nbsp; Leyendo datos r?pidos...');
     const fetched = await fetchSheetCsv();
     const txt = fetched.text;
     const rows = parseCSV(txt);
-    const nuevos = rows.slice(6).map(f => {
-      const fecha = parseFecha(f[COL.fecha]);
+    const nuevos = rows.map(f => {
+      const fecha = getFechaFila(f);
+      const permeadoA = toNum(f[COL.permeadoA]), concentradoA = toNum(f[COL.concentradoA]);
+      const permeadoB = toNum(f[COL.permeadoB]), concentradoB = toNum(f[COL.concentradoB]);
+      const permeadoC = toNum(f[COL.permeadoC]), concentradoC = toNum(f[COL.concentradoC]);
+      const permeadoD = toNum(f[COL.permeadoD]), concentradoD = toNum(f[COL.concentradoD]);
+      const permeadoE = toNum(f[COL.permeadoE]), concentradoE = toNum(f[COL.concentradoE]);
+      const prodUfi1 = toNum(f[COL.prodUfi1]), prodUfi2 = toNum(f[COL.prodUfi2]), prodUfi3 = toNum(f[COL.prodUfi3]);
       return {
         fecha, iso: isoDate(fecha), anio: fecha?.getFullYear(), mes: fecha?.getMonth(), dia: fecha?.getDate(),
         turbidez: toNum(f[COL.turbidez]), tkNuevo: toNum(f[COL.tkNuevo]), tkAntiguo: toNum(f[COL.tkAntiguo]),
         recNuevo: toNum(f[COL.recNuevo]), recAntiguo: toNum(f[COL.recAntiguo]),
-        roa: toNum(f[COL.roa]), rob: toNum(f[COL.rob]), roc: toNum(f[COL.roc]), rod: toNum(f[COL.rod]), roe: toNum(f[COL.roe]),
-        ufi: toNum(f[COL.ufi]), ufn: toNum(f[COL.ufn]),
+        roa: calcRecovery(permeadoA, concentradoA), rob: calcRecovery(permeadoB, concentradoB), roc: calcRecovery(permeadoC, concentradoC), rod: calcRecovery(permeadoD, concentradoD), roe: calcRecovery(permeadoE, concentradoE),
+        ufi: sum([prodUfi1, prodUfi2, prodUfi3]), ufn: toNum(f[COL.prodUfn]),
         condA: toNum(f[COL.condA]), condB: toNum(f[COL.condB]), condC: toNum(f[COL.condC]), condD: toNum(f[COL.condD]), condE: toNum(f[COL.condE]),
         horasA: toNum(f[COL.horasA]), horasB: toNum(f[COL.horasB]), horasC: toNum(f[COL.horasC]), horasD: toNum(f[COL.horasD]), horasE: toNum(f[COL.horasE]),
-        difA: toNum(f[COL.difA]), permeadoA: toNum(f[COL.permeadoA]), concentradoA: toNum(f[COL.concentradoA]),
-        difB: toNum(f[COL.difB]), permeadoB: toNum(f[COL.permeadoB]), concentradoB: toNum(f[COL.concentradoB]),
-        difC: toNum(f[COL.difC]), permeadoC: toNum(f[COL.permeadoC]), concentradoC: toNum(f[COL.concentradoC]),
-        difD: toNum(f[COL.difD]), permeadoD: toNum(f[COL.permeadoD]), concentradoD: toNum(f[COL.concentradoD]),
-        difE: toNum(f[COL.difE]), permeadoE: toNum(f[COL.permeadoE]), concentradoE: toNum(f[COL.concentradoE]),
+        difA: toNum(f[COL.difA]), permeadoA, concentradoA,
+        difB: toNum(f[COL.difB]), permeadoB, concentradoB,
+        difC: toNum(f[COL.difC]), permeadoC, concentradoC,
+        difD: toNum(f[COL.difD]), permeadoD, concentradoD,
+        difE: toNum(f[COL.difE]), permeadoE, concentradoE,
         volA: toNum(f[COL.volA]), volB: toNum(f[COL.volB]), volC: toNum(f[COL.volC]), volD: toNum(f[COL.volD]), volE: toNum(f[COL.volE]),
         caudalTotal: toNum(f[COL.caudalTotal]),
         turbUfi1: toNum(f[COL.turbUfi1]), turbUfi2: toNum(f[COL.turbUfi2]), turbUfi3: toNum(f[COL.turbUfi3]),
         dpUfi1: toNum(f[COL.dpUfi1]), dpUfi2: toNum(f[COL.dpUfi2]), dpUfi3: toNum(f[COL.dpUfi3]),
-        prodUfi1: toNum(f[COL.prodUfi1]), prodUfi2: toNum(f[COL.prodUfi2]), prodUfi3: toNum(f[COL.prodUfi3]), prodUfn: toNum(f[COL.prodUfn]),
+        prodUfi1, prodUfi2, prodUfi3, prodUfn: toNum(f[COL.prodUfn]),
         promAguaOsm: toNum(f[COL.promAguaOsm]), totalAguaMar: toNum(f[COL.totalAguaMar]),
-        prodAlcanzada: toNum(f[COL.prodAlcanzada]), prodRequerida: toNum(f[COL.prodRequerida]),
+        prodAlcanzada: toNum(f[COL.prodAlcanzada]), prodRequerida: DEFAULT_PROD_REQUERIDA,
         pozo1: toNum(f[COL.pozo1]), pozo4: toNum(f[COL.pozo4]), condEstacion1: toNum(f[COL.condEstacion1])
       };
     }).filter(x => x.fecha).sort((a,b) => a.fecha - b.fecha);
@@ -1946,7 +1974,8 @@ async function cargarSheets(manual=false){
     if(!Object.keys(charts).length) initCharts();
     renderDashboard();
     const hora = new Date().toLocaleTimeString("es-PE", { hour:"2-digit", minute:"2-digit", second:"2-digit" });
-    setSync(`<i class="fas fa-check-circle"></i>&nbsp; ${manual ? "Actualizado manualmente" : "Autoactualizado"}: ${registros.length} registros | ${hora} | ${fetched.label}${cambio ? "" : " | sin cambios"}`, "ok");
+    const ultimaFecha = registros.length ? displayDate(registros[registros.length - 1].fecha) : "--";
+    setSync(`<i class="fas fa-check-circle"></i>&nbsp; ${manual ? "Actualizado manualmente" : "Autoactualizado"}: ${registros.length} registros | ultima fecha ${ultimaFecha} | ${hora} | ${fetched.label}${cambio ? "" : " | sin cambios"}`, "ok");
   } catch(e) {
     console.error(e);
     setSync('<i class="fas fa-triangle-exclamation"></i>&nbsp; Sheets no conectado. Revisa publicacion CSV.', "err");
@@ -2048,6 +2077,43 @@ function getVals(periodo, diaData, vista){
   };
 }
 
+function drawComplianceRing(percent, color){
+  const canvas = $("prodRingCanvas");
+  if(!canvas) return;
+  const size = 148;
+  const dpr = Math.max(1, window.devicePixelRatio || 1);
+  if(canvas.width !== size * dpr || canvas.height !== size * dpr){
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+  }
+  canvas.style.width = size + "px";
+  canvas.style.height = size + "px";
+
+  const ctx = canvas.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, size, size);
+
+  const cx = size / 2;
+  const cy = size / 2;
+  const lineWidth = 13;
+  const start = -Math.PI / 2;
+  const end = start + (Math.max(0, Math.min(percent || 0, 100)) / 100) * Math.PI * 2;
+
+  ctx.lineWidth = lineWidth;
+  ctx.lineCap = "round";
+  ctx.strokeStyle = "#dde8f2";
+  ctx.beginPath();
+  ctx.arc(cx, cy, RING_RADIUS, 0, Math.PI * 2);
+  ctx.stroke();
+
+  if(percent > 0){
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+    ctx.arc(cx, cy, RING_RADIUS, start, end);
+    ctx.stroke();
+  }
+}
+
 function renderDashboard(){
   if(!registros.length || !Object.keys(charts).length) return;
   const vista = $("vista").value, anio = +$("anio").value, mes = +$("mes").value, iso = $("fecha").value;
@@ -2085,7 +2151,7 @@ function renderDashboard(){
   $("topRiskChip").className = "chip " + (riskHigh ? "warn" : "ok");
 
   const ringColor = prodPct >= 100 ? "#12b76a" : "#ef4444";
-  $("prodRing").style.background = `conic-gradient(${ringColor} ${prodPctSafe * 3.6}deg, #dde8f2 ${prodPctSafe * 3.6}deg)`;
+  drawComplianceRing(prodPctSafe, ringColor);
   $("prodPctRing").innerText = `${format(prodPctShown,0)}%`;
   $("prodBarFill").style.width = `${prodPctSafe}%`;
   $("prodBarFill").style.background = ringColor;
@@ -2323,6 +2389,7 @@ async function captureDashboard(){
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Capturando...';
     closeCaptureResult();
+    if(registros.length && Object.keys(charts).length) renderDashboard();
     document.body.classList.add("capturing");
     await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     const target = $("captureArea");
@@ -2371,3 +2438,4 @@ window.addEventListener("load", () => {
 </script>
 </body>
 </html>
+
