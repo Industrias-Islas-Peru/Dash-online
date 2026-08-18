@@ -294,27 +294,12 @@
       position: relative;
     }
 
-    .ring svg {
+    .ring-canvas {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
-      transform: rotate(-90deg);
       z-index: 0;
-    }
-
-    .ring-track {
-      fill: none;
-      stroke: #dde8f2;
-      stroke-width: 13;
-    }
-
-    .ring-progress {
-      fill: none;
-      stroke: var(--red);
-      stroke-width: 13;
-      stroke-linecap: round;
-      transition: stroke-dashoffset .45s ease, stroke .25s ease;
     }
 
     .ring::before {
@@ -1621,10 +1606,7 @@
         <article class="panel">
           <div class="panel-body decision-hero">
             <div class="ring" id="prodRing">
-              <svg viewBox="0 0 148 148" aria-hidden="true" focusable="false">
-                <circle class="ring-track" cx="74" cy="74" r="65"></circle>
-                <circle class="ring-progress" id="prodRingProgress" cx="74" cy="74" r="65"></circle>
-              </svg>
+              <canvas class="ring-canvas" id="prodRingCanvas" width="296" height="296" aria-hidden="true"></canvas>
               <div class="ring-content">
                 <strong id="prodPctRing">--</strong>
                 <span>Cumplimiento</span>
@@ -1742,7 +1724,7 @@
       </div>
     </section>
 
-    <div class="footer-note">Datos leidos desde Google Sheets mediante endpoint local. Refresco automatico cada 5 segundos.</div>
+    <div class="footer-note">Datos leidos desde Google Sheets publicado. Refresco automatico cada 5 segundos. Version captura canvas 2026-08-17.</div>
   </main>
 
   <div class="capture-result" id="captureResult" aria-live="polite">
@@ -1760,7 +1742,7 @@
 <script>
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/14gRV6bJBCoe_aG16q8UeRjC5dqWMvzL34KZY76fSwR4/gviz/tq?tqx=out:csv&gid=0";
 const FAST_SHEET_URL = ""; // Desactivado: el endpoint anterior devolvia solo hasta julio. Se usa el CSV nuevo del Sheet.
-const CAPTURE_SAVE_URL = "http://127.0.0.1:8788/save-capture";
+const CAPTURE_SAVE_URL = ""; // En hosting publico la captura se descarga desde el navegador.
 const COL = {
   fecha:0, turbidez:1, tkNuevo:3, tkAntiguo:4, recNuevo:5, recAntiguo:6,
   roa:7, rob:8, roc:9, rod:10, roe:11, ufi:12, ufn:13,
@@ -1782,7 +1764,6 @@ const MESES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto"
 const AUTO_REFRESH_MS = 5000;
 const FETCH_TIMEOUT_MS = 9000;
 const RING_RADIUS = 65;
-const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 let registros = [];
 let charts = {};
 let ultimoCSV = "";
@@ -2086,6 +2067,43 @@ function getVals(periodo, diaData, vista){
   };
 }
 
+function drawComplianceRing(percent, color){
+  const canvas = $("prodRingCanvas");
+  if(!canvas) return;
+  const size = 148;
+  const dpr = Math.max(1, window.devicePixelRatio || 1);
+  if(canvas.width !== size * dpr || canvas.height !== size * dpr){
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+  }
+  canvas.style.width = size + "px";
+  canvas.style.height = size + "px";
+
+  const ctx = canvas.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, size, size);
+
+  const cx = size / 2;
+  const cy = size / 2;
+  const lineWidth = 13;
+  const start = -Math.PI / 2;
+  const end = start + (Math.max(0, Math.min(percent || 0, 100)) / 100) * Math.PI * 2;
+
+  ctx.lineWidth = lineWidth;
+  ctx.lineCap = "round";
+  ctx.strokeStyle = "#dde8f2";
+  ctx.beginPath();
+  ctx.arc(cx, cy, RING_RADIUS, 0, Math.PI * 2);
+  ctx.stroke();
+
+  if(percent > 0){
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+    ctx.arc(cx, cy, RING_RADIUS, start, end);
+    ctx.stroke();
+  }
+}
+
 function renderDashboard(){
   if(!registros.length || !Object.keys(charts).length) return;
   const vista = $("vista").value, anio = +$("anio").value, mes = +$("mes").value, iso = $("fecha").value;
@@ -2123,10 +2141,7 @@ function renderDashboard(){
   $("topRiskChip").className = "chip " + (riskHigh ? "warn" : "ok");
 
   const ringColor = prodPct >= 100 ? "#12b76a" : "#ef4444";
-  const ringProgress = $("prodRingProgress");
-  ringProgress.setAttribute("stroke", ringColor);
-  ringProgress.setAttribute("stroke-dasharray", String(RING_CIRCUMFERENCE));
-  ringProgress.setAttribute("stroke-dashoffset", String(RING_CIRCUMFERENCE * (1 - prodPctSafe / 100)));
+  drawComplianceRing(prodPctSafe, ringColor);
   $("prodPctRing").innerText = `${format(prodPctShown,0)}%`;
   $("prodBarFill").style.width = `${prodPctSafe}%`;
   $("prodBarFill").style.background = ringColor;
@@ -2335,6 +2350,7 @@ function setCaptureMessage(message){
 }
 
 async function saveCaptureToLocalServer(blob, filename){
+  if(!CAPTURE_SAVE_URL) return null;
   try {
     const response = await fetch(`${CAPTURE_SAVE_URL}?filename=${encodeURIComponent(filename)}`, {
       method: "POST",
@@ -2363,6 +2379,7 @@ async function captureDashboard(){
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Capturando...';
     closeCaptureResult();
+    if(registros.length && Object.keys(charts).length) renderDashboard();
     document.body.classList.add("capturing");
     await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     const target = $("captureArea");
