@@ -289,9 +289,32 @@
       display: grid;
       place-items: center;
       border-radius: 50%;
-      background: conic-gradient(var(--green) 0deg, #dde8f2 0deg);
+      background: #edf4fa;
       box-shadow: 0 18px 34px rgba(13, 27, 42, .14);
       position: relative;
+    }
+
+    .ring svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+      z-index: 0;
+    }
+
+    .ring-track {
+      fill: none;
+      stroke: #dde8f2;
+      stroke-width: 13;
+    }
+
+    .ring-progress {
+      fill: none;
+      stroke: var(--red);
+      stroke-width: 13;
+      stroke-linecap: round;
+      transition: stroke-dashoffset .45s ease, stroke .25s ease;
     }
 
     .ring::before {
@@ -300,10 +323,12 @@
       inset: 13px;
       border-radius: 50%;
       background: #fff;
+      z-index: 1;
     }
 
     .ring-content {
       position: relative;
+      z-index: 2;
       text-align: center;
     }
 
@@ -1596,6 +1621,10 @@
         <article class="panel">
           <div class="panel-body decision-hero">
             <div class="ring" id="prodRing">
+              <svg viewBox="0 0 148 148" aria-hidden="true" focusable="false">
+                <circle class="ring-track" cx="74" cy="74" r="65"></circle>
+                <circle class="ring-progress" id="prodRingProgress" cx="74" cy="74" r="65"></circle>
+              </svg>
               <div class="ring-content">
                 <strong id="prodPctRing">--</strong>
                 <span>Cumplimiento</span>
@@ -1713,7 +1742,7 @@
       </div>
     </section>
 
-    <div class="footer-note">Datos leidos desde Google Sheets publicado. Refresco automatico cada 5 segundos.</div>
+    <div class="footer-note">Datos leidos desde Google Sheets mediante endpoint local. Refresco automatico cada 5 segundos.</div>
   </main>
 
   <div class="capture-result" id="captureResult" aria-live="polite">
@@ -1729,9 +1758,9 @@
   </div>
 
 <script>
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTid2z1F-w3ShKdbW0Ig16Wyr6UfyA1e-szpOPF_6f3pqLUz2oAcQK-KrZMISb7SpGUvP8Y5EBYLrJ7/pub?gid=501238155&single=true&output=csv";
-const FAST_SHEET_URL = "https://script.google.com/macros/s/AKfycbwwYDdzZxeXtQnSWRNjRd4zUpEUtitaVb9cOlg74W7B7Dy8UKkFsYmOvBO8Xzz05F_W/exec"; // Apps Script JSONP; el CSV publicado queda como respaldo.
-const CAPTURE_SAVE_URL = ""; // En hosting publico la captura se descarga desde el navegador.
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/14gRV6bJBCoe_aG16q8UeRjC5dqWMvzL34KZY76fSwR4/gviz/tq?tqx=out:csv&gid=0";
+const FAST_SHEET_URL = ""; // Desactivado: el endpoint anterior devolvia solo hasta julio. Se usa el CSV nuevo del Sheet.
+const CAPTURE_SAVE_URL = "http://127.0.0.1:8788/save-capture";
 const COL = {
   fecha:0, turbidez:1, tkNuevo:3, tkAntiguo:4, recNuevo:5, recAntiguo:6,
   roa:7, rob:8, roc:9, rod:10, roe:11, ufi:12, ufn:13,
@@ -1752,6 +1781,8 @@ const COL = {
 const MESES = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 const AUTO_REFRESH_MS = 5000;
 const FETCH_TIMEOUT_MS = 9000;
+const RING_RADIUS = 65;
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 let registros = [];
 let charts = {};
 let ultimoCSV = "";
@@ -1874,6 +1905,9 @@ function parseFecha(s){
   const d = new Date(s);
   return isNaN(d) ? null : new Date(d.getFullYear(), d.getMonth(), d.getDate());
 }
+function getFechaFila(f){
+  return parseFecha(f[COL.fecha]) || parseFecha(f[1]) || parseFecha(f[0]);
+}
 function isoDate(d){ return d ? `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}` : ""; }
 function displayDate(d){ return d ? d.toLocaleDateString("es-PE", { day:"2-digit", month:"2-digit", year:"numeric" }) : "--"; }
 
@@ -1906,14 +1940,17 @@ function getSeleccionInicial(keep={}){
 }
 
 async function cargarSheets(manual=false){
-  const keep = getEstadoFiltros();
+  const filtrosActuales = getEstadoFiltros();
+  const ultimaFechaAntes = registros.length ? registros[registros.length - 1].iso : "";
+  const estabaEnUltimaFecha = filtrosActuales.fecha && ultimaFechaAntes && filtrosActuales.fecha === ultimaFechaAntes;
+  const keep = manual || estabaEnUltimaFecha ? {} : filtrosActuales;
   try {
     setSync('<i class="fas fa-spinner fa-spin"></i>&nbsp; Leyendo datos r?pidos...');
     const fetched = await fetchSheetCsv();
     const txt = fetched.text;
     const rows = parseCSV(txt);
     const nuevos = rows.slice(6).map(f => {
-      const fecha = parseFecha(f[COL.fecha]);
+      const fecha = getFechaFila(f);
       return {
         fecha, iso: isoDate(fecha), anio: fecha?.getFullYear(), mes: fecha?.getMonth(), dia: fecha?.getDate(),
         turbidez: toNum(f[COL.turbidez]), tkNuevo: toNum(f[COL.tkNuevo]), tkAntiguo: toNum(f[COL.tkAntiguo]),
@@ -1946,7 +1983,8 @@ async function cargarSheets(manual=false){
     if(!Object.keys(charts).length) initCharts();
     renderDashboard();
     const hora = new Date().toLocaleTimeString("es-PE", { hour:"2-digit", minute:"2-digit", second:"2-digit" });
-    setSync(`<i class="fas fa-check-circle"></i>&nbsp; ${manual ? "Actualizado manualmente" : "Autoactualizado"}: ${registros.length} registros | ${hora} | ${fetched.label}${cambio ? "" : " | sin cambios"}`, "ok");
+    const ultimaFecha = registros.length ? displayDate(registros[registros.length - 1].fecha) : "--";
+    setSync(`<i class="fas fa-check-circle"></i>&nbsp; ${manual ? "Actualizado manualmente" : "Autoactualizado"}: ${registros.length} registros | ultima fecha ${ultimaFecha} | ${hora} | ${fetched.label}${cambio ? "" : " | sin cambios"}`, "ok");
   } catch(e) {
     console.error(e);
     setSync('<i class="fas fa-triangle-exclamation"></i>&nbsp; Sheets no conectado. Revisa publicacion CSV.', "err");
@@ -2085,7 +2123,10 @@ function renderDashboard(){
   $("topRiskChip").className = "chip " + (riskHigh ? "warn" : "ok");
 
   const ringColor = prodPct >= 100 ? "#12b76a" : "#ef4444";
-  $("prodRing").style.background = `conic-gradient(${ringColor} ${prodPctSafe * 3.6}deg, #dde8f2 ${prodPctSafe * 3.6}deg)`;
+  const ringProgress = $("prodRingProgress");
+  ringProgress.setAttribute("stroke", ringColor);
+  ringProgress.setAttribute("stroke-dasharray", String(RING_CIRCUMFERENCE));
+  ringProgress.setAttribute("stroke-dashoffset", String(RING_CIRCUMFERENCE * (1 - prodPctSafe / 100)));
   $("prodPctRing").innerText = `${format(prodPctShown,0)}%`;
   $("prodBarFill").style.width = `${prodPctSafe}%`;
   $("prodBarFill").style.background = ringColor;
@@ -2294,7 +2335,6 @@ function setCaptureMessage(message){
 }
 
 async function saveCaptureToLocalServer(blob, filename){
-  if(!CAPTURE_SAVE_URL) return null;
   try {
     const response = await fetch(`${CAPTURE_SAVE_URL}?filename=${encodeURIComponent(filename)}`, {
       method: "POST",
